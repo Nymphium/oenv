@@ -1,0 +1,3 @@
+(executables
+ (names basic config)
+ (libraries oenv unix))

@@ -1,0 +1,17 @@
+name: CI on Nix
+
+on:
+  [pull_request, push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            cores = 0
+      - name: Run tests
+        run: |
+          nix develop -c dune test
