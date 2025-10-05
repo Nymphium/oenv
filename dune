@@ -1,0 +1,7 @@
+(documentation
+ (package oenv))
+
+(install
+ (section doc)
+ (files odoc-config.sexp)
+ (package oenv))

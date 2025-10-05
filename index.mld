@@ -1,0 +1,37 @@
+{0 {e oenv}: A composable environment variable reader 🧩}
+
+{b 🏚️ Homepage:} {:https://github.com/Nymphium/oenv}
+
+{@ocaml[
+# let ( let* ) m k = Result.bind in
+  let* host = Oenv.(string ~secret:false "HOST" |> read) in
+  let* port = Oenv.(int "PORT" |> read) in
+  Result.ok ()
+;;
+utop.bc: [INFO] Found HOST: localhost
+utop.bc: [INFO] Found PORT: <secret>
+- : (unit, Oenv.Errors.t) result = Ok ()
+]}
+
+{2 Features}
+- Basic types: string, int, bool
+- 2nd types: list, option
+- Custom types
+- Record
+- Logging with Logs
+
+{1 Package}
+[oenv] providing [Oenv] module.
+See {{!Oenv} doc}.
+
+{1 Development}
+Requires Nix and Direnv.
+
+{@bash skip[
+$ git clone https://github.com/Nymphium/oenv
+$ direnv allow
+$ dune build
+]}
+
+{1 LICENSE}
+This library is licensed under the MIT License.

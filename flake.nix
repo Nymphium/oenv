@@ -32,17 +32,7 @@
         };
         on = opam-nix.lib.${system};
         src = ./.;
-        localPackages =
-          with builtins;
-          filter (f: !isNull f) (
-            map (
-              f:
-              let
-                f' = match "(.*)\.opam$" f;
-              in
-              if isNull f' then null else elemAt f' 0
-            ) (attrNames (readDir src))
-          );
+        localPackages = [ "oenv" ];
 
         devPackagesQuery = {
           ocaml-lsp-server = "*";
@@ -59,21 +49,20 @@
                   value = "*";
                 }) localPackages
               );
-            query =
-              {
-                ocaml-system = "*";
-                ocamlformat = "*";
-              }
-              // devPackagesQuery
-              // localPackagesQuery;
+            query = {
+              ocaml-system = "*";
+              ocamlformat = "*";
+            }
+            // devPackagesQuery
+            // localPackagesQuery;
           in
-          on.buildOpamProject' {
+          on.buildDuneProject {
             inherit pkgs;
             resolveArgs = {
               with-test = true;
               with-doc = true;
             };
-          } src query;
+          } "oenv" src query;
 
         devPackages = with builtins; attrValues (pkgs.lib.getAttrs (attrNames devPackagesQuery) scope);
         formatter = pkgs.nixfmt-rfc-style;

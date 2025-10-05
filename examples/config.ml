@@ -16,7 +16,7 @@ let () =
   ignore
   @@
   let open Let in
-  let env = Oenv.(Record.(v make +: string "HOST" +: int "PORT" |> close)) in
+  let env = Oenv.(Product.(v make +: string "HOST" +: int "PORT" |> close)) in
   let* config = Oenv.read_source env source in
   print_endline @@ show config;
   Result.ok ()
