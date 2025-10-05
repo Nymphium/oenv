@@ -38,7 +38,7 @@ jobs:
           dune test --debug-backtrace
 
   documentation:
-    needs: test
+    needs: build
     if: github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
     environment:
       name: github-pages
