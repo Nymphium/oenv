@@ -98,7 +98,7 @@ let custom ?secret name validate = create ?secret Custom name validate
 
     {@ocaml[
     (* when HOSTS="a,b,c" *) 
-    Oenv.(list "HOSTS" (Result.ok) |> read) = Ok ["a"; "b"; "c"]
+    Oenv.(list "HOSTS" Result.ok |> read) = Ok ["a"; "b"; "c"]
     ]}
     *)
 let list ?secret ?(sep = ',') name validate =
