@@ -83,7 +83,7 @@
           release = pkgs.mkShell {
             packaes = [
               pkgs.ocaml-ng.ocamlPackages.dune-release
-              pkgs.ocaml-ng.ocamlPackages.dune
+              pkgs.ocaml-ng.ocamlPackages.dune_3
             ];
           };
         };
