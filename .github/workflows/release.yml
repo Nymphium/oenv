@@ -46,7 +46,7 @@ jobs:
           git config --global url."https://github.com/".pushInsteadOf "git@github.com:"
           echo "machine github.com login ${{ env.GITHUB_ID }} password ${{ secrets.RELEASE_TOKEN }}" > ~/.netrc
           mkdir -p "$HOME/git"
-          git clone https://github.com/ocaml/opam-repository "$HOME/git/opam-repository"
+          git clone https://github.com/${{ env.GITHUB_ID }}/opam-repository "$HOME/git/opam-repository"
           mkdir -p "$HOME/.config/dune"
           cat <<EOL > "$HOME/.config/dune/release.yml"
           remote: https://github.com/${{ env.GITHUB_ID }}/opam-repository
@@ -56,14 +56,5 @@ jobs:
         run: |
           ${{ env.DUNE_RELEASE }} distrib --skip-lint --skip-build
           ${{ env.DUNE_RELEASE }} opam pkg
-      - name: Upload tgz
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.RELEASE_TOKEN }}
-          file: _build/${{ env.GITHUB_REPO_NAME }}-${{ env.RELEASE_VERSION }}.tbz
-          asset_name: ${{ env.GITHUB_REPO_NAME }}-${{ env.RELEASE_VERSION }}.tbz
-          tag: ${{ env.RELEASE_VERSION }}
-      - name: Submit
-        run: |
-          ${{ env.DUNE_RELEASE }} publish -y --draft --token ${{ secrets.RELEASE_TOKEN }}
+          ${{ env.DUNE_RELEASE }} publish -y --token ${{ secrets.RELEASE_TOKEN }}
           ${{ env.DUNE_RELEASE }} opam submit -y -m "See git log" --no-auto-open --token ${{ secrets.RELEASE_TOKEN }}
