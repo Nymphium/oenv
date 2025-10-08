@@ -46,6 +46,7 @@ jobs:
           echo "machine github.com login ${{ env.GITHUB_ID }} password ${{ secrets.GITHUB_TOKEN }}" > ~/.netrc
           mkdir -p "$HOME/git"
           git clone https://github.com/ocaml/opam-repository "$HOME/git/opam-repository"
+          dune build oenv.opam
       - name: Submit
         run: |
           dune-release distrib --skip-lint --skip-build
