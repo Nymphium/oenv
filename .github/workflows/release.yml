@@ -13,6 +13,7 @@ env:
   GIT_NAME: "Satoru Kawahara"
   GITHUB_ID: "Nymphium"
   GITHUB_REPO_NAME: "oenv"
+  DUNE_RELEASE: "nix run .#dune-release --"
 
 jobs:
   release:
@@ -37,7 +38,7 @@ jobs:
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - uses: nicknovitski/nix-develop@v1
         with:
-          arguments: .#release
+          arguments: .#ci
       - name: Install deps
         run: |
           git config --global user.email "${{ env.GIT_EMAIL }}"
@@ -49,7 +50,7 @@ jobs:
           dune build oenv.opam
       - name: Submit
         run: |
-          dune-release distrib --skip-lint --skip-build
+          ${{ env.DUNE_RELEASE }} distrib --skip-lint --skip-build
           echo "https://github.com/${{ env.GITHUB_ID }}/${{ env.GITHUB_REPO_NAME }}/archive/refs/tags/${{ env.RELEASE_VERSION }}.tar.gz" > _build/asset-${{ env.RELEASE_VERSION }}.url
-          dune-release opam pkg
-          dune-release opam submit -y --no-auto-open --token ${{ secrets.GITHUB_TOKEN }}
+          ${{ env.DUNE_RELEASE }} opam pkg
+          ${{ env.DUNE_RELEASE }} opam submit -y --no-auto-open --token ${{ secrets.GITHUB_TOKEN }}

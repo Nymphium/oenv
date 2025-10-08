@@ -80,13 +80,9 @@
             inputsFrom = [ ci ];
             buildInputs = devPackages ++ [ pkgs.nil ];
           };
-          release = pkgs.mkShell {
-            buildInputs = [
-              pkgs.ocaml-ng.ocamlPackages.dune-release
-              pkgs.ocaml-ng.ocamlPackages.dune_3
-            ];
-          };
         };
+
+        dune-release = pkgs.ocaml-ng.ocamlPackages.dune-release;
       in
       {
         legacyPackages = pkgs;
@@ -98,6 +94,11 @@
               value = scope.${p};
             }) localPackages
           );
+
+        apps.dune-release = {
+          type = "app";
+          program = "${dune-release}/bin/dune-release";
+        };
         inherit devShells;
         inherit formatter;
       }
