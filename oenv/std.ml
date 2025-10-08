@@ -62,9 +62,7 @@ let bool ?secret name =
     ]}
     *)
 let optional s =
-  let (S (s, upcast)) = s in
-  conceal @@ fun source ->
-  s source |> Result.map_error upcast |> function
+  map s @@ function
   | Ok v -> Ok (Some v)
   | Error (`Missing _) -> Ok None
   | Error e -> Error e
@@ -77,12 +75,10 @@ let optional s =
     Oenv.(optional (string "USER") |> default "guest" |> read) = Ok "guest"
     ]}
     *)
-let default dv opt =
-  let (S (opt, upcast)) = opt in
-  conceal @@ fun source ->
-  opt source |> Result.map_error upcast |> function
+let default value opt =
+  map opt @@ function
   | Ok (Some v) -> Ok v
-  | Ok None | Error (`Missing _) -> Ok dv
+  | Ok None | Error (`Missing _) -> Ok value
   | Error e -> Error e
 ;;
 
@@ -109,10 +105,7 @@ let list ?secret ?(sep = ',') name validate =
     let items = String.split_on_char sep s in
     let[@tmc] rec aux acc = function
       | [] -> Ok (List.rev acc)
-      | x :: xs ->
-        (match validate x with
-         | Ok v -> aux (v :: acc) xs
-         | Error e -> Error e)
+      | x :: xs -> validate x |> Fun.flip Result.bind @@ fun v -> aux (v :: acc) xs
     in
     aux [] items)
 ;;

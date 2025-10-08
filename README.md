@@ -16,7 +16,41 @@ Result.ok ()
 # Features
 - Basic types: string, int, bool
 - 2nd types: list, option
-- Record
+- Product
 - Custom types
+- [Logs](https://erratique.ch/software/logs/doc/Logs/index.html) support
 
-See [./examples](examples/)
+## Product
+`Product` creates product reader.
+
+```ocaml
+type t =
+  { name : string
+  ; value : string option
+  }
+let make name value = { name; value }
+
+let t = Oenv.(Product.v make
+  +: string "NAME"
+  +: string "VALUE" |> option
+  |> close)
+
+Oenv.read t
+```
+
+# Custom types
+Make custom type reader with `custom` combinator.
+
+```ocaml
+type flag = A | B
+let of_string = function
+  | "A" -> Ok A
+  | "B" -> Ok B
+  | other -> Error (`Parse ("flag", other))
+
+let flag = Oenv.custom ~secret:false "FLAG" of_string
+```
+
+---
+
+See [./examples](examples/) and [reference](https://nymphium.github.io/oenv/oenv) for more details.

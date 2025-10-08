@@ -1,33 +1,16 @@
 (** {1 Errors} *)
 
-module Errors : sig
-  (** Error type with [[@@deriving show, eq]]. *)
-  type t =
-    [ `Missing of string
-    | `Nested_optional of string
-    | `Parse of string * string
-    | `Exn of exn
-    ]
-  [@@deriving show, eq]
-end
+module Errors : module type of Errors
 
 (** {1 Core types} *)
 
-(** An environment reader for ['a]. *)
-type 'a t = 'a Shapes.t
+module Shapes : sig
+  include module type of Shapes.Export
+end
 
-(** A type to be read. For example, [Sys.getenv_opt]. *)
-type source = string -> string option
+include module type of Shapes
 
-(** A validator type. *)
-type 'a validator = string -> ('a, Errors.t) Result.t
-
-val read_source : 'a t -> source -> ('a, Errors.t) Result.t
-val read : 'a t -> ('a, Errors.t) Result.t
-
-(** {!read_source} reads from {!source} and returns its result.
-    {!read} is [read_source Sys.getenv_opt].
-    *)
+(** {1 Readers} *)
 
 include module type of Std
 
@@ -35,20 +18,12 @@ include module type of Std
 
 module Product : module type of Product
 
-(* module Product : sig *)
-(*   type ('func, 'final) builder *)
-(**)
-(*   val v : 'func -> ('func, 'final) builder *)
-(*   val ( +: ) : ('a -> 'b, 'final) builder -> 'a t -> ('b, 'final) builder *)
-(*   val close : ('final, 'final) builder -> 'final t *)
-(* end *)
-
 (** {1 Logging} *)
 
 module Logging : sig
-  (** {{!Logs} [Logs]} source *)
+  (** {{: https://erratique.ch/software/logs/doc/Logs/index.html} [Logs]} source *)
   val src : Logs.src
 
-  (** Sets log level of {{!Logs} [Logs]}. *)
+  (** Sets log level of {{: https://erratique.ch/software/logs/doc/Logs/index.html} [Logs]}. *)
   val set_level : Logs.level option -> unit
 end

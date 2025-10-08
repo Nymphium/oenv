@@ -2,10 +2,10 @@
 
 (name oenv)
 
-(generate_opam_files)
-
 (source
  (github Nymphium/oenv))
+
+(documentation "https://nymphium.github.io/oenv")
 
 (license MIT)
 
@@ -16,6 +16,8 @@
 (homepage "https://github.com/Nymphium/oenv")
 
 (bug_reports "https://github.com/Nymphium/oenv/issues")
+
+(generate_opam_files)
 
 (package
  (name oenv)
@@ -30,4 +32,5 @@
   ppx_deriving
   (eio_main :with-test)
   (ppx_assert :with-test)
-  (ppx_inline_test :with-test)))
+  (ppx_inline_test :with-test)
+  (odoc :with-doc)))

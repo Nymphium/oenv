@@ -82,6 +82,7 @@
           };
         };
 
+        dune-release = pkgs.ocaml-ng.ocamlPackages.dune-release;
       in
       {
         legacyPackages = pkgs;
@@ -94,6 +95,11 @@
             }) localPackages
           );
 
+        apps.dune-release = {
+          type = "app";
+          program = "${dune-release}/bin/dune-release";
+
+        };
         inherit devShells;
         inherit formatter;
       }

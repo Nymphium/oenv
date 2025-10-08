@@ -37,33 +37,14 @@ let v x : ('func, 'final) builder = conceal @@ Fun.const @@ Ok x
 
 open struct
   let apply pf px =
-    fun getter ->
-    match pf getter with
-    | Error e -> Error e
-    | Ok f ->
-      (match px getter with
-       | Error e -> Error e
-       | Ok x -> Ok (f x))
+    let open Result in
+    fun source -> pf source |> Fun.flip bind @@ fun f -> px source |> map f
   ;;
 end
 
 (** [+:] appends a reader. *)
 let ( +: ) (b : ('a -> 'b, 'final) builder) (s : 'a t) : ('b, 'final) builder =
-  let b =
-    let (S (b, upcast)) = b in
-    fun getter ->
-      match b getter with
-      | Error e -> Error (upcast e)
-      | Ok v -> Ok v
-  in
-  let s =
-    let (S (s, upcast')) = s in
-    fun getter ->
-      match s getter with
-      | Error e -> Error (upcast' e)
-      | Ok v -> Ok v
-  in
-  conceal @@ apply b s
+  conceal @@ apply (value b) (value s)
 ;;
 
 (** [close]s the builder and creates a reader. *)

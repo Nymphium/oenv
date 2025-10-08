@@ -15,9 +15,7 @@ type ('k, 'a, 'err) field =
   }
   constraint 'err = [> Errors.t ]
 
-type source = string -> string option
-type 'a validator = string -> ('a, Errors.t) Result.t
-type ('a, 'err) schema = source -> ('a, 'err) result
+type ('a, 'err) schema = (string -> string option) -> ('a, 'err) result
 
 (** conceal ['err] from schema with reify function *)
 type _ t = S : ('a, 'err) schema * ('err -> Errors.t) -> 'a t
@@ -34,11 +32,27 @@ let field (type k a) (t : (k, a, 'err) field) source : (k, 'err) result =
     t.validate v
 ;;
 
-let conceal s = S (s, fun err -> (err :> [> Errors.t ]))
+let[@inline] conceal s = S (s, fun err -> (err :> [> Errors.t ]))
 
-let read_source s =
-  let (S (s, upcast)) = s in
-  fun source -> s source |> Result.map_error upcast
+let[@inline] value s =
+  let (S (scm, reify)) = s in
+  fun source -> scm source |> Result.map_error reify
 ;;
 
-let read s = read_source s Sys.getenv_opt
+let[@inline] map s f = conceal @@ Fun.compose f @@ value s
+
+module Export : sig
+  type nonrec 'a t = 'a t
+
+  val read_source : 'a t -> (string -> string option) -> ('a, Errors.t) Result.t
+  val read : 'a t -> ('a, Errors.t) Result.t
+
+  (** {!read_source} reads from a source and returns its result.
+    {!read} is [read_source Sys.getenv_opt].
+    *)
+end = struct
+  type nonrec 'a t = 'a t
+
+  let read_source s = value s
+  let read s = read_source s Sys.getenv_opt
+end
