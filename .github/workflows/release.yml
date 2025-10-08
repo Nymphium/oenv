@@ -53,7 +53,8 @@ jobs:
           local: $HOME/git/opam-repository
           EOL
           cat <<'EOL' > CHANGES.md
-          - See `git log`. (#0, @NA)
+          # HEAD
+          - See `git log`.
           EOL
       - name: Build release contents
         run: |
