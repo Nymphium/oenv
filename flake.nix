@@ -70,7 +70,7 @@
         devShells = rec {
           ci = pkgs.mkShell {
             inputsFrom = builtins.map (p: scope.${p}) localPackages;
-            packages = [
+            buildinputs = [
               formatter
               scope.ocamlformat
               pkgs.actionlint
@@ -80,9 +80,10 @@
             inputsFrom = [ ci ];
             buildInputs = devPackages ++ [ pkgs.nil ];
           };
-          release = pkgs.mkShell {
-            packaes = [
+          release = pkgs.mkShellNoCC {
+            buildInputs = [
               pkgs.ocaml-ng.ocamlPackages.dune-release
+              formatter
               pkgs.ocaml-ng.ocamlPackages.dune_3
             ];
           };
