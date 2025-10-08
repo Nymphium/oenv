@@ -52,4 +52,4 @@ jobs:
           ${{ env.DUNE_RELEASE }} distrib --skip-lint --skip-build
           echo "https://github.com/${{ env.GITHUB_ID }}/${{ env.GITHUB_REPO_NAME }}/archive/refs/tags/${{ env.RELEASE_VERSION }}.tar.gz" > _build/asset-${{ env.RELEASE_VERSION }}.url
           ${{ env.DUNE_RELEASE }} opam pkg
-          ${{ env.DUNE_RELEASE }} opam submit -y --no-auto-open --token ${{ secrets.GITHUB_TOKEN }}
+          ${{ env.DUNE_RELEASE }} opam submit -y -m "See git log" --no-auto-open --token ${{ secrets.GITHUB_TOKEN }}
