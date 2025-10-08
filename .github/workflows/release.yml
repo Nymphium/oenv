@@ -13,7 +13,7 @@ env:
   GIT_NAME: "Satoru Kawahara"
   GITHUB_ID: "Nymphium"
   GITHUB_REPO_NAME: "oenv"
-  DUNE_RELEASE: "nix run .#dune-release"
+  DUNE_RELEASE: "nix run .#dune-release --"
 
 jobs:
   release:
