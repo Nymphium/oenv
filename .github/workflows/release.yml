@@ -65,5 +65,5 @@ jobs:
           tag: ${{ env.RELEASE_VERSION }}
       - name: Submit
         run: |
-          ${{ env.DUNE_RELEASE }} publish doc -y --token ${{ secrets.RELEASE_TOKEN }}
+          ${{ env.DUNE_RELEASE }} publish -y --draft --token ${{ secrets.RELEASE_TOKEN }}
           ${{ env.DUNE_RELEASE }} opam submit -y -m "See git log" --no-auto-open --token ${{ secrets.RELEASE_TOKEN }}
