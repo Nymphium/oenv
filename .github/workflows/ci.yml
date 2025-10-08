@@ -2,7 +2,14 @@ name: CI on Nix
 
 on:
   push:
+    branches:
+      - master
+      - develop
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - labeled
   workflow_dispatch:
 
 permissions:
@@ -11,8 +18,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ !contains(fromJSON('["refs/heads/develop","refs/heads/master"]'), github.ref) }}
 
 jobs:
   build:
@@ -26,6 +33,10 @@ jobs:
             cores = 0
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - uses: nicknovitski/nix-develop@v1
+      - uses: actions/cache@v4
+        with:
+          path: _build
+          key: ${{ runner.os }}-dune-${{ hasFiles('**/flake.lock')}}-${{ hashFiles('**/dune-project') }}
       - name: Check for format
         run: |
           # shellcheck disable=SC2046
@@ -53,7 +64,11 @@ jobs:
             cores = 0
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - uses: nicknovitski/nix-develop@v1
-      - name: "Build docs"
+      - uses: actions/cache@v4
+        with:
+          path: _build
+          key: ${{ runner.os }}-dune-${{ hasFiles('**/flake.lock')}}-${{ hashFiles('**/dune-project') }}
+      - name: Build docs
         run: |
           dune build @doc
       - name: Setup Pages
@@ -61,7 +76,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "_build/default/_doc/_html"
+          path: _build/default/_doc/_html
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
