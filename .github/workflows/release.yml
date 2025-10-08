@@ -47,9 +47,23 @@ jobs:
           echo "machine github.com login ${{ env.GITHUB_ID }} password ${{ secrets.RELEASE_TOKEN }}" > ~/.netrc
           mkdir -p "$HOME/git"
           git clone https://github.com/ocaml/opam-repository "$HOME/git/opam-repository"
-      - name: Submit
+          mkdir -p "$HOME/.config/dune"
+          cat <<EOL > "$HOME/.config/dune/release.yml"
+          remote: https://github.com/${{ env.GITHUB_ID }}/opam-repository
+          local: $HOME/git/opam-repository
+          EOL
+      - name: Build release contents
         run: |
           ${{ env.DUNE_RELEASE }} distrib --skip-lint --skip-build
-          echo "https://github.com/${{ env.GITHUB_ID }}/${{ env.GITHUB_REPO_NAME }}/archive/refs/tags/${{ env.RELEASE_VERSION }}.tar.gz" > _build/asset-${{ env.RELEASE_VERSION }}.url
           ${{ env.DUNE_RELEASE }} opam pkg
+      - name: Upload tgz
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.RELEASE_TOKEN }}
+          file: _build/${{ env.GITHUB_REPO_NAME }}-${{ env.RELEASE_VERSION }}.tbz
+          asset_name: ${{ env.GITHUB_REPO_NAME }}-${{ env.RELEASE_VERSION }}.tbz
+          tag: ${{ env.RELEASE_VERSION }}
+      - name: Submit
+        run: |
+          ${{ env.DUNE_RELEASE }} publish doc -y --token ${{ secrets.RELEASE_TOKEN }}
           ${{ env.DUNE_RELEASE }} opam submit -y -m "See git log" --no-auto-open --token ${{ secrets.RELEASE_TOKEN }}
