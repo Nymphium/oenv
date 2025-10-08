@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: Checkout tree
         uses: actions/checkout@v5
-      - run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> "$GITHUB_ENV"
       - uses: DeterminateSystems/nix-installer-action@main
         with:
           extra-conf: |
@@ -42,8 +42,8 @@ jobs:
           git config --global user.name "${{ env.GIT_NAME }}"
           git config --global url."https://github.com/".pushInsteadOf "git@github.com:"
           echo "machine github.com login ${{ env.GITHUB_ID }} password ${{ secrets.GITHUB_TOKEN }}" > ~/.netrc
-          mkdir -p $HOME/git
-          git clone https://github.com/ocaml/opam-repository $HOME/git/opam-repository
+          mkdir -p "$HOME/git"
+          git clone https://github.com/ocaml/opam-repository "$HOME/git/opam-repository"
       - name: Submit
         run: |
           ${{ env.DUNE_RELEASE }} distrib --skip-lint --skip-build
