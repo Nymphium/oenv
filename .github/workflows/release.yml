@@ -52,6 +52,9 @@ jobs:
           remote: https://github.com/${{ env.GITHUB_ID }}/opam-repository
           local: $HOME/git/opam-repository
           EOL
+          cat <<EOL > CHANGES.md
+          See `git log`
+          EOL
       - name: Build release contents
         run: |
           ${{ env.DUNE_RELEASE }} distrib --skip-lint --skip-build
