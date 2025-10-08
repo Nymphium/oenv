@@ -52,8 +52,8 @@ jobs:
           remote: https://github.com/${{ env.GITHUB_ID }}/opam-repository
           local: $HOME/git/opam-repository
           EOL
-          cat <<EOL > CHANGES.md
-          See `git log`
+          cat <<'EOL' > CHANGES.md
+          - See `git log` (#NA, @NA)
           EOL
       - name: Build release contents
         run: |
