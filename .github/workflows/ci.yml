@@ -42,6 +42,7 @@ jobs:
           # shellcheck disable=SC2046
           nix fmt $(git ls-files '*.nix')
           dune fmt
+          dune build oenv.opam
           git diff --exit-code
           actionlint
       - name: Run tests

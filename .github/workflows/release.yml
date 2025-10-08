@@ -36,9 +36,6 @@ jobs:
           extra-conf: |
             cores = 0
       - uses: DeterminateSystems/magic-nix-cache-action@main
-      - uses: nicknovitski/nix-develop@v1
-        with:
-          arguments: .#ci
       - name: Install deps
         run: |
           git config --global user.email "${{ env.GIT_EMAIL }}"
@@ -47,7 +44,6 @@ jobs:
           echo "machine github.com login ${{ env.GITHUB_ID }} password ${{ secrets.GITHUB_TOKEN }}" > ~/.netrc
           mkdir -p "$HOME/git"
           git clone https://github.com/ocaml/opam-repository "$HOME/git/opam-repository"
-          dune build oenv.opam
       - name: Submit
         run: |
           ${{ env.DUNE_RELEASE }} distrib --skip-lint --skip-build
