@@ -36,6 +36,9 @@ jobs:
           extra-conf: |
             cores = 0
       - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: nicknovitski/nix-develop@v1
+        with:
+          arguments: .#ci
       - name: Install deps
         run: |
           git config --global user.email "${{ env.GIT_EMAIL }}"
