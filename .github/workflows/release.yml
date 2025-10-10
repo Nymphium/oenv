@@ -54,7 +54,6 @@ jobs:
           mkdir -p "$HOME/.config/dune"
           cat <<EOL > "$HOME/.config/dune/release.yml"
           remote: https://github.com/${{ env.GITHUB_ID }}/opam-repository
-          # local: $HOME/git/opam-repository
           EOL
           cat <<'EOL' > CHANGES.md
           # HEAD
