@@ -48,12 +48,13 @@ jobs:
           git config --global user.email "${{ env.GIT_EMAIL }}"
           git config --global user.name "${{ env.GIT_NAME }}"
           git config --global url."https://github.com/".pushInsteadOf "git@github.com:"
-          # echo "machine github.com login ${{ env.GITHUB_ID }} password ${{ secrets.RELEASE_TOKEN }}" > ~/.netrc
-          # mkdir -p "$HOME/git"
-          # git clone https://github.com/${{ env.GITHUB_ID }}/opam-repository "$HOME/git/opam-repository"
+          echo "machine github.com login ${{ env.GITHUB_ID }} password ${{ secrets.RELEASE_TOKEN }}" > ~/.netrc
+          mkdir -p "$HOME/git"
+          git clone https://github.com/${{ env.GITHUB_ID }}/opam-repository "$HOME/git/opam-repository"
           mkdir -p "$HOME/.config/dune"
           cat <<EOL > "$HOME/.config/dune/release.yml"
           remote: https://github.com/${{ env.GITHUB_ID }}/opam-repository
+          local: $HOME/git/opam-repository
           EOL
           cat <<'EOL' > CHANGES.md
           # HEAD
