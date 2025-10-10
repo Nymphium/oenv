@@ -34,6 +34,8 @@ jobs:
             echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}"
             echo "DUNE_RELEASE_GITHUB_TOKEN=${{ secrets.RELEASE_TOKEN }}"
             echo "DUNE_RELEASE_OPAM_REPO={{ env.GITHUB_ID }}/opam-repository"
+            echo "DUNE_RELEASE_REMOTE_REPO=https://github.com/${{ env.GITHUB_ID }}/opam-repository"
+            echo "DUNE_RELEASE_LOCAL_REPO=$HOME/git/opam-repository"
           } >> "$GITHUB_ENV"
       - uses: DeterminateSystems/nix-installer-action@main
         with:
@@ -50,12 +52,7 @@ jobs:
           git config --global url."https://github.com/".pushInsteadOf "git@github.com:"
           echo "machine github.com login ${{ env.GITHUB_ID }} password ${{ secrets.RELEASE_TOKEN }}" > ~/.netrc
           mkdir -p "$HOME/git"
-          git clone https://github.com/${{ env.GITHUB_ID }}/opam-repository "$HOME/git/opam-repository"
-          mkdir -p "$HOME/.config/dune"
-          cat <<EOL > "$HOME/.config/dune/release.yml"
-          remote: https://github.com/${{ env.GITHUB_ID }}/opam-repository
-          local: $HOME/git/opam-repository
-          EOL
+          git clone ${{ env.DUNE_RELEASE_REMOTE_REPO }} ${{ env.DUNE_RELEASE_LOCAL_REPO }}
           cat <<'EOL' > CHANGES.md
           # HEAD
           - See `git log`.
