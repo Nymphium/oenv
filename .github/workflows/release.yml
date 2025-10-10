@@ -52,5 +52,5 @@ jobs:
         run: |
           ${{ env.DUNE_RELEASE }} distrib --skip-lint --skip-build
           ${{ env.DUNE_RELEASE }} opam pkg
-          ${{ env.DUNE_RELEASE }} opam publish -y
+          ${{ env.DUNE_RELEASE }} publish -y
           ${{ env.DUNE_RELEASE }} opam submit -y --no-auto-open
