@@ -15,16 +15,7 @@ env:
   DUNE_RELEASE: "nix run .#dune-release --"
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-      - name: Release
-        uses: softprops/action-gh-release@v2
-
   publish:
-    needs: release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout tree
