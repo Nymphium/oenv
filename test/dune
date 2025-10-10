@@ -1,0 +1,24 @@
+(test
+ (name test)
+ (modules test)
+ (libraries oenv alcotest eio_main)
+ (preprocess
+  (pps ppx_deriving.std)))
+
+(executable
+ (name test_log)
+ (modules test_log)
+ (libraries oenv))
+
+(rule
+ (alias runtest)
+ ; (target test_log.out)
+ (deps
+  (:exe ./test_log.exe)
+  (:expected test_log.expected))
+ (action
+  (progn
+   (with-stderr-to
+    test_log.out
+    (run %{exe}))
+   (diff? %{expected} test_log.out))))

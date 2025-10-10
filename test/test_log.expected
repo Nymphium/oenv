@@ -1,0 +1,2 @@
+test_log.exe: [INFO] Found var1: <secret>
+test_log.exe: [INFO] Found var2: world

@@ -26,11 +26,10 @@
   "oenv is a library for reading environment variables in a composable way, with support for default values, required variables, custom types, and logging via logs.")
  (depends
   (ocaml
-   (>= 4.14))
-  (dune :dev)
+   (>= 5.2))
+  (dune (>= 3.18))
   logs
   ppx_deriving
+  (alcotest :with-test)
   (eio_main :with-test)
-  (ppx_assert :with-test)
-  (ppx_inline_test :with-test)
   (odoc :with-doc)))

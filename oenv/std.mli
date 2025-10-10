@@ -18,10 +18,17 @@ open Shapes
 
 (** {1 Basic types} *)
 
-(** [string ?secret name] reads [name] from a source and returns its value as a string. *)
+(** [string ?secret name] reads [name] from a source and returns its value as a string.
+    If [secret] is [true] (by default), the value is sealed in logs.
+
+    {@ocaml[
+      Oenv.(string "USER" |> read) (* when USER=alice *) = Ok "alice"
+    ]}
+    *)
 val string : ?secret:bool -> string -> string t
 
 (** [int ?secret name] reads the value of [name] from a source and interprets it as an int.
+    If [secret] is [true] (by default), the value is sealed in logs.
 
     {@ocaml[
       Oenv.(int "PORT" |> read) (* when PORT=8080 *) = Ok 8080
@@ -30,7 +37,8 @@ val string : ?secret:bool -> string -> string t
     *)
 val int : ?secret:bool -> string -> int t
 
-(** [bool ?secret name] reads [name] from a source and interprets the value as a bool. Only ["true"] or ["false"] are accepted. *)
+(** [bool ?secret name] reads [name] from a source and interprets the value as a bool. Only ["true"] or ["false"] are accepted.
+    If [secret] is [true] (by default), the value is sealed in logs. *)
 val bool : ?secret:bool -> string -> bool t
 
 (** {1 Optional} *)
@@ -58,10 +66,31 @@ val default : 'a -> 'a option t -> 'a t
     Oenv allows custom types with a validator.
     *)
 
-(** Creates a new custom reader. *)
-val custom : ?secret:bool -> string -> (string -> ('a, Errors.t) Result.t) -> 'a t
+(** Creates a new custom reader.
+    If [secret] is [true] (by default), the value is sealed in logs.
+
+    {@ocaml[
+    module M = struct
+      type t =
+        | A
+        | B
+      [@@deriving show, eq]
+
+      let validate = function
+        | "A" -> Ok A
+        | "B" -> Ok B
+        | s -> Error (`Parse ("A|B", s))
+      ;;
+    end
+
+    (* when M is "A" *)
+    Oenv.(custom M.validate "M" |> read) = Ok M.A
+    ]}
+    *)
+val custom : (string -> ('a, Errors.t) Result.t) -> ?secret:bool -> string -> 'a t
 
 (** Reads [name] as a list separated by [sep] (default is [',']), validating each element with [validate].
+    If [secret] is [true] (by default), the value is sealed in logs.
 
     {@ocaml[
     (* when HOSTS="a,b,c" *) 

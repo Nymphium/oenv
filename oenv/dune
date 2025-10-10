@@ -2,6 +2,5 @@
  (name oenv)
  (public_name oenv)
  (libraries logs)
- (inline_tests)
  (preprocess
-  (pps ppx_deriving.std ppx_inline_test ppx_assert ppx_expect)))
+  (pps ppx_deriving.std)))

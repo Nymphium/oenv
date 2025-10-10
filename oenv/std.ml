@@ -1,10 +1,8 @@
 open Shapes
 
-open struct
-  let create ?(secret = true) shape name validate =
-    conceal @@ field { shape = Shape shape; name; validate; secret }
-  ;;
-end
+let create ?(secret = true) shape name validate =
+  conceal @@ field { shape = Shape shape; name; validate; secret }
+;;
 
 let string ?secret name = create ?secret String name Result.ok
 
@@ -37,7 +35,7 @@ let default value opt =
   | Error e -> Error e
 ;;
 
-let custom ?secret name validate = create ?secret Custom name validate
+let custom validate ?secret name = create ?secret Custom name validate
 
 let list ?secret ?(sep = ',') name validate =
   create ?secret Custom name @@ fun s ->
