@@ -27,7 +27,7 @@
  (depends
   (ocaml
    (>= 5.2))
-  (dune (>= 3.18))
+  dune
   logs
   ppx_deriving
   (alcotest :with-test)
