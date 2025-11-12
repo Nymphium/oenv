@@ -41,11 +41,16 @@ let[@inline] value s =
 
 let[@inline] map s f = conceal @@ Fun.compose f @@ value s
 
+let widen r =
+  Fun.flip Result.map_error r @@ function
+  | #Errors.t as err -> err
+;;
+
 module Export : sig
   type nonrec 'a t = 'a t
 
-  val read_source : 'a t -> (string -> string option) -> ('a, Errors.t) Result.t
-  val read : 'a t -> ('a, Errors.t) Result.t
+  val read_source : 'a t -> (string -> string option) -> ('a, [> Errors.t ]) Result.t
+  val read : 'a t -> ('a, [> Errors.t ]) Result.t
 
   (** {!read_source} reads from a source and returns its result.
     {!read} is [read_source Sys.getenv_opt].
@@ -53,6 +58,11 @@ module Export : sig
 end = struct
   type nonrec 'a t = 'a t
 
-  let read_source s = value s
+  let read_source s map =
+    value s map
+    |> Result.map_error @@ function
+       | #Errors.t as err -> err
+  ;;
+
   let read s = read_source s Sys.getenv_opt
 end

@@ -181,4 +181,12 @@ let record =
   "record", [ record ]
 ;;
 
+(* check type only *)
+let _widened () : (unit, [ Oenv.Errors.t | `Widened_error ]) Result.t =
+  let ( let* ) = Result.bind in
+  let* _ = Oenv.(int "NON_EXISTENT_VAR" |> read) in
+  let* _ = Error `Widened_error in
+  Ok ()
+;;
+
 let () = run "oenv" [ basic; record ]
