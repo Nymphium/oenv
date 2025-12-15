@@ -33,7 +33,7 @@ jobs:
             cores = 0
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - uses: nicknovitski/nix-develop@v1
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: _build
           key: ${{ runner.os }}-dune-${{ hashFiles('**/flake.lock') }}-${{ hashFiles('**/dune-project') }}
@@ -65,7 +65,7 @@ jobs:
             cores = 0
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - uses: nicknovitski/nix-develop@v1
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: _build
           key: ${{ runner.os }}-dune-${{ hashFiles('**/flake.lock')}}-${{ hashFiles('**/dune-project') }}
